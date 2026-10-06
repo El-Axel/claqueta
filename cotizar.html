@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D1511">
+<title>Claqueta · Cotizar</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230D1511'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%235BE08A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind.config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans">
+
+<div class="fondo corto" aria-hidden="true"></div>
+
+<div class="app">
+  <header class="flex items-center justify-between pt-[calc(env(safe-area-inset-top)+1rem)] entra" style="--i:0">
+    <span class="cristal btn-ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M4 10h16v9H4zM4 10l1.6-4.2 4.4.9L8.6 10M10 6.7l4.4.9L13 10M14.4 7.6l4.4.9L17.4 10"/></svg>
+    </span>
+    <p class="font-bold tracking-tight">Claqueta</p>
+    <a href="ajustes.html" class="cristal btn-ic" aria-label="Ajustes">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>
+    </a>
+  </header>
+
+  <!-- Aquí cotizar.js dibuja la lista, el formulario o el detalle -->
+  <main id="vista"></main>
+</div>
+
+<nav class="dock cristal" aria-label="Principal">
+  <a href="index.html"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Inicio</a>
+  <a href="cotizar.html" aria-current="page"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM9 12h6M9 16h6"/></svg>Cotizar</a>
+  <a href="agenda.html"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</a>
+  <a href="clientes.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>Clientes</a>
+</nav>
+
+<script src="js/app.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/config.js"></script>
+<script src="js/google.js"></script>
+<script src="js/cotizar.js"></script>
+</body>
+</html>

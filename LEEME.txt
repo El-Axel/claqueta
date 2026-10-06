@@ -1,0 +1,5 @@
+COMO SUBIR CLAQUETA
+1. Descomprime este zip.
+2. Abre claqueta/js/config.js y pega tu ID de cliente de Google entre las comillas de GOOGLE_CLIENT_ID.
+3. En Netlify > Deploys, arrastra la CARPETA claqueta (con index.html adentro).
+4. Abre tu-sitio/diagnostico.html: todo debe salir con una marca verde.

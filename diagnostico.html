@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claqueta · Diagnóstico</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; background: #0D1511; color: #EEF2EC; max-width: 36rem; margin: 0 auto; padding: 1.5rem; }
+  li { list-style: none; margin: .3rem 0; word-break: break-word; } ul { padding: 0; }
+  .ok { color: #5BE08A; } .mal { color: #FF8A6B; font-weight: 700; } p { color: #aab5ac; }
+</style>
+</head>
+<body>
+<h1>Diagnóstico de Claqueta</h1>
+<p>Revisa si tu sitio tiene todos los archivos y si el ID de cliente de Google está puesto. No muestra tus claves.</p>
+<ul id="r"></ul>
+<script>
+const archivos = ['index.html', 'cotizar.html', 'agenda.html', 'trabajo.html', 'clientes.html', 'ajustes.html', 'css/style.css', 'js/tailwind.config.js',
+  'js/app.js', 'js/ui.js', 'js/config.js', 'js/google.js', 'js/inicio.js', 'js/cotizar.js', 'js/agendar.js', 'js/agenda.js', 'js/trabajo.js', 'js/clientes.js', 'js/ajustes.js'];
+const MARCAS = { 'js/app.js': 'VERSION', 'js/ui.js': '__fallos', 'js/google.js': 'nominatim', 'js/agendar.js': 'function ubicacion', 'js/trabajo.js': 'actualizarClima',
+  'js/ajustes.js': 'sinGoogle', 'ajustes.html': 'js/google.js', 'agenda.html': 'js/google.js', 'trabajo.html': 'js/google.js', 'cotizar.html': 'js/google.js' };   // texto que solo trae la última versión
+const lista = document.getElementById('r');
+const linea = (ok, t) => { const e = document.createElement('li'); e.className = ok ? 'ok' : 'mal'; e.textContent = (ok ? '✔ ' : '✘ ') + t; lista.append(e); };
+(async () => {
+  const seguro = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  linea(seguro, `Dirección: ${location.origin}${seguro ? '' : ' (Google exige https o localhost; no funciona abriendo el archivo con doble clic)'}`);
+  for (const a of archivos) {
+    try {
+      const r = await fetch(a, { cache: 'no-store' }), t = await r.text();
+      const falso = a.endsWith('.js') && /^\s*</.test(t);   // el sitio devolvió una página HTML en lugar del código
+      const vieja = r.ok && !falso && MARCAS[a] && !t.includes(MARCAS[a]);
+      linea(r.ok && !falso && !vieja, a + (!r.ok ? ` → no existe (${r.status})` : falso ? ' → responde una página HTML en vez de código (el archivo no está)' : vieja ? ' → es una versión VIEJA: reemplázalo y vuelve a subir la carpeta' : ''));
+    } catch { linea(false, a + ' → no se pudo leer'); }
+  }
+  // ¿Se ejecuta google.js? Se carga como en la app y se mira si define «Goog»
+  const fallos = []; addEventListener('error', e => fallos.push(e.target && e.target.tagName === 'SCRIPT' ? 'no se descargó ' + e.target.getAttribute('src') : `${e.message} (${String(e.filename || '').split('/').pop()}:${e.lineno})`), true);
+  const cargar = src => new Promise(ok => { const s = document.createElement('script'); s.src = src + '?d=' + Date.now(); s.onload = s.onerror = ok; document.head.append(s); });
+  for (const s of ['js/app.js', 'js/ui.js', 'js/config.js', 'js/google.js']) await cargar(s);
+  const ok = typeof Goog !== 'undefined';
+  linea(ok, ok ? 'google.js se ejecuta y funciona (Goog definido)' : 'google.js NO se ejecuta' + (fallos.length ? ': ' + fallos.join(' | ') : ''));
+  if (ok) linea(Goog.hayGoogle(), Goog.hayGoogle() ? 'Hay ID de cliente de Google' : 'No hay ID de cliente de Google en config.js');
+  try {
+    const t = await (await fetch('js/config.js', { cache: 'no-store' })).text(), id = (/GOOGLE_CLIENT_ID:\s*'([^']*)'/.exec(t) || [])[1];
+    linea(!!id && id.endsWith('.apps.googleusercontent.com'), !id ? 'config.js: GOOGLE_CLIENT_ID está vacío (pégalo y vuelve a subir la carpeta)' : id.endsWith('.apps.googleusercontent.com') ? 'config.js: el ID de cliente está puesto y tiene el formato correcto' : 'config.js: el ID de cliente no termina en .apps.googleusercontent.com');
+  } catch { /* ya se reportó arriba */ }
+})();
+</script>
+</body>
+</html>
